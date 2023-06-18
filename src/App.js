@@ -1,22 +1,21 @@
-import logo from './logo.svg';
 import './App.css';
 import { LogInBox } from './Components/LogInBox/LogInBox';
-import { useState } from 'react';
+import RecipeList from './Components/Recipelist/RecipeList';
+
 
 
 function App() {
 
-  const [words, setWords] = useState("someWords")
-
   return (
     <div className="App">
       <header className="App-header">
-        <p>
-          Doing something
-        </p>
+        <h1>
+          Austin Recipe Storage
+        </h1>
       </header>
-      <LogInBox debugText={words}/>
-      <p>{words}</p>
+      <LogInBox/>
+      <RecipeList/>
+      
 
     </div>
   );
