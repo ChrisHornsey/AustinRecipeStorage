@@ -2,6 +2,7 @@ import './App.css';
 import { LogInBox } from './Components/LogInBox/LogInBox';
 import RecipeList from './Components/Recipelist/RecipeList';
 import RecipeAdder from './Components/RecipeAdder/RecipeAdder';
+import { RecipeTag } from './Components/Tag/RecipeTag';
 
 
 
