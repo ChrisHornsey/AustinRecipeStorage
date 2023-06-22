@@ -4,7 +4,7 @@ import { useState } from "react";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"
 
 export function LogInBox(props) {
-    const [debugText, setDebugText] = useState("Starting");
+    const [debugText, setDebugText] = useState("Please Log In");
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const auth = getAuth();

@@ -1,6 +1,7 @@
 import './App.css';
 import { LogInBox } from './Components/LogInBox/LogInBox';
 import RecipeList from './Components/Recipelist/RecipeList';
+import RecipeAdder from './Components/RecipeAdder/RecipeAdder';
 
 
 
@@ -14,6 +15,7 @@ function App() {
         </h1>
       </header>
       <LogInBox/>
+      <RecipeAdder/>
       <RecipeList/>
       
 

@@ -27,13 +27,19 @@ export default function RecipeList () {
     const [recipes, setRecipes] = useState([]);
 
 async function refreshData() {
-const querySnapshot = await getDocs(collection(db, "Recipes"));
+  let recipeArray = []
+const querySnapshot = await getDocs(collection(db, "Recipes"))
 querySnapshot.forEach((doc) => {
   // doc.data() is never undefined for query doc snapshots
-  console.log(recipes)
-  setRecipes([...recipes, doc.data()])
+   let newRecipe = doc.data();
+  console.log(recipeArray)
+  recipeArray.push(newRecipe)  
   console.log(recipes)
 });
+
+setRecipes(recipeArray)
+
+
 }
 
     return (
