@@ -24,6 +24,8 @@ export function LogInBox(props) {
     const errorMessage = error.message;
     setDebugText(errorMessage)
   });
+  setUserName("");
+  setPassword("");
   };
     
 
@@ -37,8 +39,8 @@ export function LogInBox(props) {
 
         return (
             <div className="LoginBox">
-                <input onChange={handleUserNameChange} placeholder="UserName"/>
-                <input type="password" onChange={handlePasswordChange} placeholder="Password"/>
+                <input onChange={handleUserNameChange} placeholder="UserName" value={userName}/>
+                <input type="password" onChange={handlePasswordChange} placeholder="Password" value={password}/>
                 <button onClick={handleClick}>Log In</button>
             <p>{debugText}</p>
             </div>
