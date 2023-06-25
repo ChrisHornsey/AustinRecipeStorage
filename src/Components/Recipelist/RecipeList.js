@@ -23,7 +23,7 @@ const db = getFirestore(app);
 
 
 
-export default function RecipeList () {
+export default function RecipeList (props) {
     const [recipes, setRecipes] = useState([]);
 
 async function refreshData() {
@@ -33,9 +33,7 @@ querySnapshot.forEach((doc) => {
   // doc.data() is never undefined for query doc snapshots
    let newRecipe = doc.data();
    newRecipe.id = doc.id;
-  console.log(recipeArray)
   recipeArray.push(newRecipe)  
-  console.log(recipes)
 });
 
 setRecipes(recipeArray)
@@ -54,6 +52,10 @@ async function addTag(tagName, recipeID, isFirstTag) {
       Tags: arrayUnion(tagName)
     })
   }
+  const allTagsDoc = doc(db, "Tags", "AllTags" )
+  await updateDoc(allTagsDoc, {
+    AllTags: arrayUnion(tagName)
+  })
   refreshData()
 }
 

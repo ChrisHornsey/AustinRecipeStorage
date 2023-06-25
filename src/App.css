@@ -51,4 +51,9 @@
   justify-content: center;
 }
 
+.recipeAdmin {
+  display: flex;
+  justify-content:space-evenly;
+  
+}
 
