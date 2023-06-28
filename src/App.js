@@ -3,13 +3,11 @@ import { LogInBox } from './Components/LogInBox/LogInBox';
 import RecipeList from './Components/Recipelist/RecipeList';
 import RecipeAdder from './Components/RecipeAdder/RecipeAdder';
 import { SearchBox } from './Components/SearchBox/SearchBox';
-import { getFirestore, collection, getDocs, updateDoc, doc, arrayUnion, arrayRemove, getDoc } from "firebase/firestore"
+import { getFirestore, collection, getDocs, updateDoc, doc, arrayUnion, arrayRemove, getDoc, query, where } from "firebase/firestore"
 import { initializeApp } from "firebase/app";
-import { useState } from "react";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { useState, useEffect } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDKYEzGpp3k8t5J4K3_ZMQNvr51bqUJcJ0",
   authDomain: "austinrecipestorage.firebaseapp.com",
@@ -26,6 +24,95 @@ const db = getFirestore(fireApp);
 
 function App() {
   const [allTags, setAllTags] = useState([])
+  const [recipes, setRecipes] = useState([]);
+  const [selectedTag, setSelectedTag] = useState("")
+  const [filteredRecipes, setFilteredRecipes] = useState([])
+  const [userName, setUserName] = useState("")
+
+  useEffect(filterRecipes, [selectedTag, recipes]);
+  useEffect(onLoad, [])
+
+  const auth = getAuth();
+
+
+  function onLoad() {
+    refreshRecipes();
+    getAllTags();
+    const user = auth.currentUser;
+
+    console.log("I am loading")
+    console.log(`Current user is: ${user}`)
+
+    if (user !== null) {
+      setUserName(user.email)      
+    }
+  }
+
+  function filterRecipes() {
+    let holdRecipes = []
+    if (selectedTag !== "") {
+      holdRecipes = recipes.filter(x => x.Tags.includes(selectedTag))
+      setFilteredRecipes(holdRecipes)
+    } else {
+      setFilteredRecipes([...recipes])
+    }
+    console.log(`I think I am filtering recipes based on the tag ${selectedTag}`)
+    
+  }
+
+  async function fetchRecipes() {
+    let recipeArray = []
+    const  q = query(collection(db, "Recipes"))
+    
+  const querySnapshot = await getDocs(q)
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+     let newRecipe = doc.data();
+     newRecipe.id = doc.id;
+    recipeArray.push(newRecipe)  
+  });
+
+  console.log("I think I am fetching recipes")
+  
+  return recipeArray
+  
+  }
+  
+  async function addTag(tagName, recipeID, isFirstTag) {
+    console.log(`called addtag with tagName = ${tagName}, recipeID = ${recipeID} & isFirstTag = ${isFirstTag}`)
+    const recipeToUpdate = doc(db, "Recipes", recipeID)
+    if (isFirstTag) {
+          await updateDoc(recipeToUpdate, {
+            Tags : [tagName]
+          });
+    } else {
+      await updateDoc(recipeToUpdate, {
+        Tags: arrayUnion(tagName)
+      })
+    }
+    const allTagsDoc = doc(db, "Tags", "AllTags" )
+    await updateDoc(allTagsDoc, {
+      AllTags: arrayUnion(tagName)
+    })
+    refreshRecipes();
+    getAllTags();
+  }
+  
+  async function removeTag(recipeID, tagName) {
+    console.log(`Called remove tag for recipe ${recipeID}, and tag ${tagName}`)
+    const recipeToUpdate = doc(db, "Recipes", recipeID)
+    await updateDoc(recipeToUpdate, {
+      Tags: arrayRemove(tagName)
+    })
+    refreshRecipes();
+  }
+
+  async function refreshRecipes() {
+    fetchRecipes().then( result => setRecipes(result));
+    console.log("I think I am refreshing recipes")
+   // filterRecipes()
+  }
+  
 
   async function getAllTags() {
     const allTagsRef = doc(db, "Tags", "AllTags")
@@ -43,8 +130,11 @@ function App() {
 
 
     setAllTags(allTagsData.AllTags.sort())
+
+    console.log("I think I am getting tags")
  
   }
+
 
   return (
     <div className="App">
@@ -53,12 +143,12 @@ function App() {
           Austin Recipe Storage
         </h1>
       </header>
-      <LogInBox/>
+      <LogInBox refreshRecipes={refreshRecipes} refreshTags={getAllTags} onLogIn={onLoad} userName={userName}/>
       <div className='recipeAdmin'>
       <RecipeAdder/>
-      <SearchBox allTags={allTags} refreshTags={getAllTags}v/>
+      <SearchBox allTags={allTags} setSelectedTag={setSelectedTag} selectedTag={selectedTag}/>
       </div>
-      <RecipeList/>
+      <RecipeList removeTag={removeTag} addTag={addTag} recipes={filteredRecipes}/>
       
 
     </div>
