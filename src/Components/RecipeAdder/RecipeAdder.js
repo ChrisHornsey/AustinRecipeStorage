@@ -42,12 +42,12 @@ export default function RecipeAdder() {
     }
 
     return (
-        <div className="RecipeAdder">
+        <span className="RecipeAdder">
             <input onChange={handleTitleChange} placeholder="Title" value={title}/>
             <input onChange={handleURLChange} placeholder="URL" value={URL}/>
             <button onClick={publishRecipe}>Create!</button>
             <p>{debugText}</p>
 
-        </div>
+        </span>
     )
 }

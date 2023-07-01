@@ -28,24 +28,33 @@ function App() {
   const [selectedTag, setSelectedTag] = useState("")
   const [filteredRecipes, setFilteredRecipes] = useState([])
   const [userName, setUserName] = useState("")
+  const [showLogInBox, setShowLogInBox] = useState(true)
+  const [showRecipeAdder, setShowRecipeAdder] = useState(false)
 
   useEffect(filterRecipes, [selectedTag, recipes]);
   useEffect(onLoad, [])
 
-  const auth = getAuth();
+  const auth = getAuth(fireApp);
 
 
   function onLoad() {
     refreshRecipes();
-    getAllTags();
-    const user = auth.currentUser;
+    getAllTags().then(refreshUser);
+    
 
     console.log("I am loading")
+    
+
+  function refreshUser() {
+    const user = auth.currentUser;
     console.log(`Current user is: ${user}`)
 
     if (user !== null) {
-      setUserName(user.email)      
+      setUserName(user.email) 
+      setShowLogInBox(false)     
     }
+  }
+
   }
 
   function filterRecipes() {
@@ -135,18 +144,26 @@ function App() {
  
   }
 
+  function toggleRecipeAdder() {
+    setShowRecipeAdder(!showRecipeAdder)
+  }
+
 
   return (
     <div className="App">
       <header className="App-header">
+        <span className='RecipeAdderToggle'>
+        <button onClick={toggleRecipeAdder}>{showRecipeAdder ? "Done Adding" : "Add recipes!"}</button>
+        </span>
         <h1>
           Austin Recipe Storage
         </h1>
+        <span className='UserNameLabel'>{userName ? userName : "Please log in"}</span>
       </header>
-      <LogInBox refreshRecipes={refreshRecipes} refreshTags={getAllTags} onLogIn={onLoad} userName={userName}/>
+      {showLogInBox ? <LogInBox refreshRecipes={refreshRecipes} refreshTags={getAllTags} onLogIn={onLoad}/> : ""}
       <div className='recipeAdmin'>
-      <RecipeAdder/>
       <SearchBox allTags={allTags} setSelectedTag={setSelectedTag} selectedTag={selectedTag}/>
+      {showRecipeAdder ? <RecipeAdder/> : ""}
       </div>
       <RecipeList removeTag={removeTag} addTag={addTag} recipes={filteredRecipes}/>
       
