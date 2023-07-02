@@ -7,6 +7,8 @@ import { getFirestore, collection, getDocs, updateDoc, doc, arrayUnion, arrayRem
 import { initializeApp } from "firebase/app";
 import { useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import userIcon from './Images/user.png'
+import cookingIcon from './Images/cooking.png'
 
 const firebaseConfig = {
   apiKey: "AIzaSyDKYEzGpp3k8t5J4K3_ZMQNvr51bqUJcJ0",
@@ -30,8 +32,9 @@ function App() {
   const [userName, setUserName] = useState("")
   const [showLogInBox, setShowLogInBox] = useState(true)
   const [showRecipeAdder, setShowRecipeAdder] = useState(false)
+  const [searchString, setSearchString] = useState("")
 
-  useEffect(filterRecipes, [selectedTag, recipes]);
+  useEffect(filterRecipes, [searchString, selectedTag, recipes]);
   useEffect(onLoad, [])
 
   const auth = getAuth(fireApp);
@@ -58,15 +61,19 @@ function App() {
   }
 
   function filterRecipes() {
-    let holdRecipes = []
+    let holdRecipes
     if (selectedTag !== "") {
       holdRecipes = recipes.filter(x => x.Tags.includes(selectedTag))
-      setFilteredRecipes(holdRecipes)
     } else {
-      setFilteredRecipes([...recipes])
+      holdRecipes=[...recipes]
     }
     console.log(`I think I am filtering recipes based on the tag ${selectedTag}`)
+
+    if (searchString) {
+      holdRecipes = holdRecipes.filter(x => x.Title.toLowerCase().includes(searchString.toLowerCase()))
+    }
     
+    setFilteredRecipes(holdRecipes)
   }
 
   async function fetchRecipes() {
@@ -148,23 +155,31 @@ function App() {
     setShowRecipeAdder(!showRecipeAdder)
   }
 
+function toggleLogInBox() {
+  setShowLogInBox(!showLogInBox)
+}  
+
 
   return (
     <div className="App">
       <header className="App-header">
         <span className='RecipeAdderToggle'>
-        <button onClick={toggleRecipeAdder}>{showRecipeAdder ? "Done Adding" : "Add recipes!"}</button>
+        <img className='CookingIcon' src={cookingIcon} onClick={toggleRecipeAdder}/>
         </span>
         <h1>
           Austin Recipe Storage
         </h1>
-        <span className='UserNameLabel'>{userName ? userName : "Please log in"}</span>
+        <span className='UserNameLabel'>
+        <img className='UserIcon' src={userIcon} onClick={toggleLogInBox}/>
+        </span>
       </header>
-      {showLogInBox ? <LogInBox refreshRecipes={refreshRecipes} refreshTags={getAllTags} onLogIn={onLoad}/> : ""}
+      
       <div className='recipeAdmin'>
-      <SearchBox allTags={allTags} setSelectedTag={setSelectedTag} selectedTag={selectedTag}/>
-      {showRecipeAdder ? <RecipeAdder/> : ""}
+      {showRecipeAdder ? <RecipeAdder/> : <div className='RecipeAdder'></div>}
+      {showLogInBox ? <LogInBox refreshTags={getAllTags} onLogIn={onLoad} userName={userName}/> : <div className='LoginBox'></div>}
+      
       </div>
+      <SearchBox allTags={allTags} setSelectedTag={setSelectedTag} selectedTag={selectedTag} searchString={searchString} setSearchString={setSearchString}/>
       <RecipeList removeTag={removeTag} addTag={addTag} recipes={filteredRecipes}/>
       
 

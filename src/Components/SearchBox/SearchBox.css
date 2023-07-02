@@ -1,0 +1,7 @@
+.SearchBox {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    background-color: lightgray;
+    padding-bottom: 10px;
+  }

@@ -1,4 +1,5 @@
 import React from "react";
+import './RecipeAdder.css'
 import { useState } from "react";
 import { getFirestore, collection, addDoc } from "firebase/firestore"
 import { initializeApp } from "firebase/app";

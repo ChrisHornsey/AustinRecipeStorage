@@ -1,4 +1,5 @@
 import React from "react";
+import './Recipe.css'
 import { TagsList } from "../TagList/TagList";
 import { TagAdder } from "../TagAdder/tagAdder";
 

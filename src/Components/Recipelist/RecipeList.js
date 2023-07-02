@@ -1,4 +1,5 @@
 import React from "react";
+import './RecipeList.css'
 import Recipe from "../Recipe/Recipe";
 
 

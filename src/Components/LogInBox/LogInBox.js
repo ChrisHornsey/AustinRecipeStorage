@@ -1,4 +1,5 @@
 import React from "react";
+import './LoginBox.css'
 import { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
 
@@ -40,6 +41,7 @@ export function LogInBox(props) {
                 <input onChange={handleUserNameChange} placeholder="UserName" value={enteredUserName}/>
                 <input type="password" onChange={handlePasswordChange} placeholder="Password" value={password}/>
                 <button onClick={handleClick}>Log In</button>
+                <p>{props.userName ? props.userName : "Please Log in"}</p>
             </div>
         )
     

@@ -1,0 +1,20 @@
+.Tag {
+    margin-right: 10px;
+    display: inline-block;
+    background-color: black;
+    color: white;
+    height: 18px;
+    line-height: 12px;
+  }
+  .tagText {
+    font-size: small;
+  }
+  
+  .addRemove {
+    display: inline-block;
+    height: 18px;
+    width: 18px;
+    cursor: pointer;
+    background-color: black;
+    color: white;
+  }
