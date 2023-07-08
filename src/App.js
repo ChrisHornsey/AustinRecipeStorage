@@ -159,6 +159,12 @@ function toggleLogInBox() {
   setShowLogInBox(!showLogInBox)
 }  
 
+function randomRecipe() {
+  let randomNumber = Math.floor(Math.random()*filteredRecipes.length)
+
+  setFilteredRecipes([filteredRecipes[randomNumber]])
+}
+
 
   return (
     <div className="App">
@@ -179,7 +185,7 @@ function toggleLogInBox() {
       {showLogInBox ? <LogInBox refreshTags={getAllTags} onLogIn={onLoad} userName={userName}/> : <div className='LoginBox'></div>}
       
       </div>
-      <SearchBox allTags={allTags} setSelectedTag={setSelectedTag} selectedTag={selectedTag} searchString={searchString} setSearchString={setSearchString}/>
+      <SearchBox allTags={allTags} setSelectedTag={setSelectedTag} selectedTag={selectedTag} searchString={searchString} setSearchString={setSearchString} selectRandomRecipe={randomRecipe}/>
       <RecipeList removeTag={removeTag} addTag={addTag} recipes={filteredRecipes}/>
       
 
